@@ -1,89 +1,123 @@
-import React from 'react'
-import loginimg from '../assets/images/login-img.jpg'
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import banner from '../assets/images/banner.png';
+import logo from '../assets/images/smartneckband-logo.png';
+import { FaEye, FaEyeSlash } from 'react-icons/fa'; // Import eye icons
+
 const Login = () => {
+  const [mobile, setMobile] = useState('');
+  const [password, setPassword] = useState('');
+  const [rememberMe, setRememberMe] = useState(false);
+  const [showPassword, setShowPassword] = useState(false); // State for password visibility
+  const navigate = useNavigate();
+
+  const handleLogin = (e) => {
+    e.preventDefault();
+    if (mobile === '8874856645' && password === 'admin') {
+      navigate('/');
+    } else {
+      alert('Invalid credentials');
+    }
+  };
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
   return (
-    <div className="flex items-center min-h-screen p-4 bg-gray-100 dark:bg-gray-900">
-      <div className="flex-1 max-w-4xl mx-auto overflow-hidden bg-white rounded-xl shadow-xl dark:bg-gray-800">
-        <div className="flex flex-col-reverse md:flex-row">
-          {/* Image Section */}
-          <div className="h-48 md:h-auto md:w-1/2">
-            <img
-              src="/assets/img/login-office.jpeg"
-              alt="Office"
-              className="object-cover w-full h-full dark:hidden"
-            />
-            <img
-              src={loginimg}
-              alt="Office Dark"
-              className="hidden object-cover w-full h-full dark:block"
-            />
-          </div>
+    <div className="h-screen flex items-center justify-center bg-gradient-to-br from-[#ee86a8] to-[#f19b81] px-4">
+      <div className="w-full max-w-5xl bg-white rounded-3xl shadow-2xl flex flex-col md:flex-row overflow-hidden p-3" style={{ maxHeight: '90vh' }}>
+        {/* Left Banner Image - Hidden on mobile */}
+        <div className="hidden md:block md:w-1/2 bg-gradient-to-br from-[#F2709C] to-[#FF9472] relative overflow-hidden rounded-2xl">
+          <div className="absolute inset-0 bg-black/10 z-10 p-2"></div>
+          <img
+            src={banner}
+            alt="Smart Neckband Banner"
+            className="object-cover w-full h-full "
+            style={{ objectPosition: 'center' }}
+          />
+        </div>
 
-          {/* Form Section */}
-          <div className="flex items-center justify-center p-6 sm:p-12 md:w-1/2">
-            <div className="w-full">
-              <h1 className="mb-6 text-2xl text-center font-bold text-gray-800 dark:text-gray-200">Login to Your Account</h1>
+        {/* Right Login Form */}
+        <div className="w-full md:w-1/2 p-6 sm:p-8 flex flex-col justify-center overflow-y-auto" style={{ maxHeight: '90vh' }}>
+          <div className="flex flex-col gap-4 max-w-md mx-auto w-full">
+            {/* Logo - Always visible */}
+            <div className="flex justify-center">
+              <img src={logo} alt="Logo" className="w-14 h-14 object-contain" />
+            </div>
 
-              <label className="block text-sm mb-4">
-                <span className="text-gray-700 dark:text-gray-400">User Name</span>
+            <div className="text-center">
+              <h3 className="text-xl font-bold text-gray-800">Welcome Back</h3>
+              <p className="text-sm text-gray-600 mt-1">
+                Sign in to access your account
+              </p>
+            </div>
+
+            <form onSubmit={handleLogin} className="space-y-4">
+              <div className="space-y-1">
+                <label className="text-sm font-medium text-gray-700">Mobile No.</label>
                 <input
                   type="text"
-                  placeholder="Enter your user name"
-                  className="mt-1 block w-full px-4 py-2 text-sm border rounded-md dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                  required
+                  value={mobile}
+                  onChange={(e) => setMobile(e.target.value)}
+                  placeholder="Enter your Mobile No."
+                  className="w-full mt-1 px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-400 focus:border-transparent outline-none transition-all"
                 />
-              </label>
+              </div>
 
-              <label className="block text-sm mb-4">
-                <span className="text-gray-700 dark:text-gray-400">Password</span>
-                <input
-                  type="password"
-                  placeholder="Enter your password"
-                  className="mt-1 block w-full px-4 py-2 text-sm border rounded-md dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                />
-              </label>
+              <div className="space-y-1 relative">
+                <label className="text-sm font-medium text-gray-700">Password</label>
+                <div className="relative">
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    required
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="Enter your Password"
+                    className="w-full mt-1 px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-400 focus:border-transparent outline-none transition-all pr-10"
+                  />
+                  <button
+                    type="button"
+                    onClick={togglePasswordVisibility}
+                    className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 hover:text-gray-700"
+                    aria-label={showPassword ? "Hide password" : "Show password"}
+                  >
+                    {showPassword ? <FaEyeSlash className="h-4 w-4" /> : <FaEye className="h-4 w-4" />}
+                  </button>
+                </div>
+              </div>
 
-              <button className="w-full px-4 py-2 mb-4 text-white bg-purple-600 rounded-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500">
-                Log In
+              <div className="flex items-center justify-between text-xs text-gray-600">
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={rememberMe}
+                    onChange={(e) => setRememberMe(e.target.checked)}
+                    className="h-3 w-3 accent-orange-500 focus:ring-orange-400 rounded"
+                  />
+                  Remember Me
+                </label>
+                <a href="/forgetPassword" className="text-orange-600 hover:underline font-medium">Forgot password?</a>
+              </div>
+
+              <button
+                type="submit"
+                className="w-full py-2 px-4 text-sm rounded-lg text-white font-medium bg-gradient-to-r from-orange-500 to-purple-600 hover:from-orange-600 hover:to-purple-700 shadow-md hover:shadow-lg transition-all duration-300"
+              >
+                Sign In
               </button>
 
-              {/* <div className="flex items-center justify-center my-4">
-                <span className="w-full border-t border-gray-300 dark:border-gray-600"></span>
-                <span className="px-2 text-sm text-gray-500 dark:text-gray-400">or</span>
-                <span className="w-full border-t border-gray-300 dark:border-gray-600"></span>
+              <div className="text-center text-sm text-gray-600 pt-1">
+               
+                <a href="/loginwithotp" className="text-orange-600 font-medium hover:underline">Login with OTP</a>
               </div>
-
-              <button className="flex items-center justify-center w-full px-4 py-2 mb-3 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 hover:border-gray-500">
-                <svg className="w-4 h-4 mr-2" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M12 .3c-6.6 0-12 5.4-12 12 0 5.3 3.4 9.8 8.2 11.4.6.1.8-.3.8-.6v-2c-3.3.7-4-1.6-4-1.6-.5-1.2-1.2-1.6-1.2-1.6-1.1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1.1 1.8 2.8 1.3 3.5 1 .1-.8.4-1.3.8-1.6-2.6-.3-5.5-1.3-5.5-5.9 0-1.3.5-2.4 1.2-3.2-.1-.3-.5-1.5.1-3.2 0 0 1-.3 3.3 1.2 1-.3 2-.4 3-.4s2 .1 3 .4c2.3-1.6 3.3-1.2 3.3-1.2.6 1.7.2 2.9.1 3.2.8.8 1.2 1.9 1.2 3.2 0 4.6-2.8 5.6-5.5 5.9.4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6C20.6 22.1 24 17.6 24 12.3c0-6.6-5.4-12-12-12z" />
-                </svg>
-                Login with GitHub
-              </button>
-
-              <button className="flex items-center justify-center w-full px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 hover:border-gray-500">
-                <svg className="w-4 h-4 mr-2" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M23.95 4.57c-.89.39-1.83.65-2.82.77 1.01-.61 1.79-1.57 2.16-2.72-.95.56-2.01.96-3.13 1.18-.9-.96-2.17-1.56-3.59-1.56C9.72 2.24 7.52 4.45 7.52 7.16c0 .39.05.77.13 1.13C5.1 7.93 2.7 6.29 1.13 4.06.72 4.78.48 5.62.48 6.5c0 1.71.87 3.21 2.19 4.09-.8-.03-1.56-.25-2.22-.62v.06c0 2.38 1.69 4.37 3.95 4.83-.41.11-.85.17-1.3.17-.31 0-.61-.03-.91-.08.61 1.95 2.45 3.38 4.6 3.42-1.68 1.32-3.8 2.11-6.1 2.11-.39 0-.78-.02-1.17-.07 2.19 1.39 4.77 2.21 7.56 2.21 9.05 0 14-7.5 14-13.99 0-.21 0-.42-.01-.63.96-.69 1.8-1.56 2.46-2.55z" />
-                </svg>
-                Login with Twitter
-              </button> */}
-
-              <div className="mt-6 text-sm text-center text-gray-600 dark:text-gray-400">
-                <a href="#" className="text-purple-600 hover:underline dark:text-purple-400">
-                  Forgot your password?
-                </a>
-              </div>
-
-              <div className="mt-2 text-sm text-center text-gray-600 dark:text-gray-400">
-                Don’t have an account?{' '}
-                <a href="#" className="text-purple-600 hover:underline dark:text-purple-400">
-                  Create one
-                </a>
-              </div>
-            </div>
+            </form>
           </div>
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Login
+export default Login;

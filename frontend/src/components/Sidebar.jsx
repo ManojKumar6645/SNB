@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
     FiHome,
     FiActivity,
@@ -16,14 +16,38 @@ import {
 } from 'react-icons/fi';
 import { IoPawOutline, IoPaw } from 'react-icons/io5';
 import { MdPets, MdOutlinePets } from 'react-icons/md';
-import { useNavigate } from 'react-router-dom';
-
+import { useNavigate, useLocation } from 'react-router-dom';
 
 const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
     const [openMenus, setOpenMenus] = useState({});
     const navigate = useNavigate();
+    const location = useLocation();
 
     const [activeItem, setActiveItem] = useState('Dashboard');
+
+    // Set active item based on current route when component mounts or location changes
+    useEffect(() => {
+        const currentPath = location.pathname;
+        
+        // Check main menu items
+        const mainItem = mainMenuItems.find(item => item.link === currentPath);
+        if (mainItem) {
+            setActiveItem(mainItem.name);
+            return;
+        }
+        
+        // Check dropdown menu items
+        for (const menu of dropdownMenus) {
+            const subItem = menu.items.find(item => item.link === currentPath);
+            if (subItem) {
+                setActiveItem(subItem.name);
+                setOpenMenus(prev => ({ ...prev, [menu.name]: true }));
+                return;
+            }
+        }
+        
+        // If no match found, keep the current active item
+    }, [location.pathname]);
 
     const toggleMenu = (menuName) => {
         setOpenMenus(prev => ({
@@ -126,7 +150,6 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
                                         {activeItem === item.name ? item.activeIcon : item.icon}
                                         <span>{item.name}</span>
                                     </button>
-
                                 </li>
                             ))}
                         </ul>
@@ -141,12 +164,12 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
                                             handleItemClick(menu.name);
                                         }}
                                         className={`flex items-center justify-between w-full text-medium font-medium transition-colors
-                                            ${activeItem === menu.name
+                                            ${activeItem === menu.name || menu.items.some(item => activeItem === item.name)
                                                 ? 'text-purple-600'
                                                 : 'text-gray-600 hover:text-purple-500'}`}
                                     >
                                         <span className="flex items-center space-x-3" >
-                                            {activeItem === menu.name ? menu.activeIcon : menu.icon}
+                                            {activeItem === menu.name || menu.items.some(item => activeItem === item.name) ? menu.activeIcon : menu.icon}
                                             <span>{menu.name}</span>
                                         </span>
                                         {openMenus[menu.name] ? (
@@ -161,7 +184,11 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
                                                 <li key={idx}>
                                                     <a
                                                         href={sub.link}
-                                                        onClick={() => handleItemClick(sub.name)}
+                                                        onClick={(e) => {
+                                                            e.preventDefault();
+                                                            handleItemClick(sub.name);
+                                                            navigate(sub.link);
+                                                        }}
                                                         className={`flex items-center space-x-2 px-2 py-1 rounded transition-all duration-200
                                                             ${activeItem === sub.name
                                                                 ? 'bg-purple-50 text-purple-700 font-medium'
@@ -179,15 +206,13 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
                         </ul>
                         <div className="px-6 my-6">
                             <button
-                                onClick={() => navigate('/create-account')}
+                                onClick={() => navigate('/user-registration')}
                                 className="flex items-center justify-between w-full px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple"
                             >
                                 Create User
                                 <span className="ml-2" aria-hidden="true">+</span>
                             </button>
                         </div>
-
-
                     </div>
                 </div>
             </aside>
